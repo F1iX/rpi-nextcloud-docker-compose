@@ -17,7 +17,7 @@ The images `mariadb`, `nginx-proxy` and `letsencrypt-nginx-proxy-companion` are 
     - Create a folder, e.g. `/media/usbssd/nextcloud-data`
     - `chown www-data:root /media/usbssd/nextcloud-data`
     - `chmod 770 /media/usbssd/nextcloud-data`
-    - ...or delete the line `- /media/usbssd/nextcloud-data:/var/www/html/data` to simply use the main Docker volume nextcloud for your data
+    - ...or delete the line `- /media/usbssd/nextcloud-data:/var/www/html/data` to simply use the main Docker volume `nextcloud` for your data
 1. Run `docker-compose up -d`
 1. Navigate to your domain, configure database to MySQL on host `db` with the credentials specified in `mysql-variables.env`
 1. Enjoy your nextcloud instance!
