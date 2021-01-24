@@ -1,10 +1,9 @@
-# WIP
-
 # Anki-Sync-Server for Raspberry Pi with https
-This repository contains a `docker-compose.yml` file to deploy a Anki-Sync-Server instance on a Raspberry Pi. Successfuly tested on a Raspberry Pi 4 B running Raspberry Pi OS Lite buster.
+This repository contains a `docker-compose.yml` file to deploy a Anki-Sync-Server instance on a Raspberry Pi with a reverse-proxy to enable TLS (https) for communication with the AnkiDroid App.
+AnkiDroid does not accept non-https servers as of version 2.11.
 
-It uses the plain official Nextcloud (not NextCloudPi) Docker image as well as MariaDB and LetsEncrpyt through an nginx-proxy.
-The images `mariadb`, `nginx-proxy` and `letsencrypt-nginx-proxy-companion` are replaced with custom builds for `armhf` architectures with special thanks to [alexanderkrause](https://github.com/Alexander-Krause/rpi-docker-letsencrypt-nginx-proxy-companion) and [jsurf](https://hub.docker.com/r/jsurf/rpi-mariadb).
+It uses the Docker image from ankicommunity/docker-anki-sync-server as well as LetsEncrpyt through an nginx-proxy.
+The images `nginx-proxy` and `letsencrypt-nginx-proxy-companion` are builds for `armhf` architectures thanks to [alexanderkrause](https://github.com/Alexander-Krause/rpi-docker-letsencrypt-nginx-proxy-companion).
 
 ## Prerequisites
 - [Docker installation](https://phoenixnap.com/kb/docker-on-raspberry-pi)
@@ -13,13 +12,17 @@ The images `mariadb`, `nginx-proxy` and `letsencrypt-nginx-proxy-companion` are 
 - Port redirection for external connections on port 80 and 443
 
 ## Deployment
-1. Configure variables and credentials and save files as `nextcloud-variables.env` and `mysql-variables.env`
-1. Configure the volume holding your Nextcloud user data
-    - Mount an external HDD, e.g. to `/media/usbssd`
-    - Create a folder, e.g. `/media/usbssd/nextcloud-data`
-    - `chown www-data:root /media/usbssd/nextcloud-data`
-    - `chmod 770 /media/usbssd/nextcloud-data`
-    - ...or delete the line `- /media/usbssd/nextcloud-data:/var/www/html/data` to simply use the main Docker volume `nextcloud` for your data
-1. Run `docker-compose up -d`
-1. Navigate to your domain, configure database to MySQL on host `db` with the credentials specified in `mysql-variables.env`
-1. Enjoy your nextcloud instance!
+1. Clone this repository including the submodules with `git clone --recurse-submodules https://github.com/ankicommunity/docker-anki-sync-server.git`
+2. Configure variables and credentials in `anki-variables.env`
+3. Create the folder holding your anki user data and enter it in the docker-compose.yml file 
+Example: `- /media/usbssd/anki-data:/app/data`
+4. Run `docker-compose up -d --build`
+5. Add/Configure users by sending the appropriate commands to the administration interface inside container `anki-server` with
+`docker exec anki-server /app/anki-sync-server/ankisyncctl.py YOURCOMMANDHERE`
+`
+    Commands:
+      adduser <username> - add a new user
+      deluser <username> - delete a user
+      lsuser             - list users
+      passwd <username>  - change password of a user
+`

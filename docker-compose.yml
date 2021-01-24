@@ -10,8 +10,8 @@ services:
     networks:
       - anki_network
     ports:
-      - 8080:80
-      - 8443:443
+      - 80:80
+      - 443:443
     volumes:
       - ./proxy/conf.d:/etc/nginx/conf.d:rw
       - ./proxy/vhost.d:/etc/nginx/vhost.d:rw
@@ -44,10 +44,8 @@ services:
     depends_on:
       - letsencrypt
       - proxy
-    ports:
-      - 80:27701
     volumes:
-      - /home/pi/anki/anki-data:/app/data:rw
+      - /path/to/anki-data/folder/on/host:/app/data:rw
       - /etc/localtime:/etc/localtime:ro
     env_file:
       - anki-variables.env
