@@ -1,0 +1,3 @@
+[submodule "docker-anki-sync-server"]
+	path = docker-anki-sync-server
+	url = https://github.com/ankicommunity/docker-anki-sync-server.git
