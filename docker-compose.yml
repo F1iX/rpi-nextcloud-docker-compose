@@ -37,7 +37,7 @@ services:
     restart: unless-stopped
   
   app:
-    image: anki-sync-server:raspberry-pi-latest
+    build: docker-anki-sync-server/Docker
     container_name: anki-server
     networks:
       - anki_network
