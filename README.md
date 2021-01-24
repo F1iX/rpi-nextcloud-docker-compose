@@ -1,5 +1,7 @@
-# Nextcloud for Raspberry Pi
-This repository contains a `docker-compose.yml` file to deploy a Nextcloud instance on a Raspberry Pi. Successfuly tested on a Raspberry Pi 4 B running Raspberry Pi OS Lite buster.
+# WIP
+
+# Anki-Sync-Server for Raspberry Pi with https
+This repository contains a `docker-compose.yml` file to deploy a Anki-Sync-Server instance on a Raspberry Pi. Successfuly tested on a Raspberry Pi 4 B running Raspberry Pi OS Lite buster.
 
 It uses the plain official Nextcloud (not NextCloudPi) Docker image as well as MariaDB and LetsEncrpyt through an nginx-proxy.
 The images `mariadb`, `nginx-proxy` and `letsencrypt-nginx-proxy-companion` are replaced with custom builds for `armhf` architectures with special thanks to [alexanderkrause](https://github.com/Alexander-Krause/rpi-docker-letsencrypt-nginx-proxy-companion) and [jsurf](https://hub.docker.com/r/jsurf/rpi-mariadb).

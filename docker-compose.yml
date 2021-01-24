@@ -6,12 +6,12 @@ services:
     image: alexanderkrause/rpi-nginx-proxy
     labels:
       - "com.github.jrcs.letsencrypt_nginx_proxy_companion.nginx_proxy=true"
-    container_name: nextcloud-proxy
+    container_name: anki-proxy
     networks:
-      - nextcloud_network
+      - anki_network
     ports:
-      - 80:80
-      - 443:443
+      - 8080:80
+      - 8443:443
     volumes:
       - ./proxy/conf.d:/etc/nginx/conf.d:rw
       - ./proxy/vhost.d:/etc/nginx/vhost.d:rw
@@ -23,11 +23,11 @@ services:
   
   letsencrypt:
     image: alexanderkrause/rpi-letsencrypt-nginx-proxy-companion
-    container_name: nextcloud-letsencrypt
+    container_name: anki-letsencrypt
     depends_on:
       - proxy
     networks:
-      - nextcloud_network
+      - anki_network
     volumes:
       - ./proxy/certs:/etc/nginx/certs:rw
       - ./proxy/vhost.d:/etc/nginx/vhost.d:rw
@@ -35,39 +35,23 @@ services:
       - /etc/localtime:/etc/localtime:ro
       - /var/run/docker.sock:/var/run/docker.sock:ro
     restart: unless-stopped
-
-  db:
-    image: jsurf/rpi-mariadb
-    container_name: nextcloud-mariadb
-    networks:
-      - nextcloud_network
-    volumes:
-      - db:/var/lib/mysql
-      - /etc/localtime:/etc/localtime:ro
-    env_file:
-      - mysql-variables.env
-    restart: unless-stopped
   
   app:
-    image: nextcloud:latest
-    container_name: nextcloud-app
+    image: anki-sync-server:raspberry-pi-latest
+    container_name: anki-server
     networks:
-      - nextcloud_network
+      - anki_network
     depends_on:
       - letsencrypt
       - proxy
-      - db
+    ports:
+      - 80:27701
     volumes:
-      - nextcloud:/var/www/html
-      - /media/usbssd/nextcloud-data:/var/www/html/data
+      - /home/pi/anki/anki-data:/app/data:rw
       - /etc/localtime:/etc/localtime:ro
     env_file:
-      - nextcloud-variables.env
+      - anki-variables.env
     restart: unless-stopped
 
-volumes:
-  nextcloud:
-  db:
-
 networks:
-  nextcloud_network:
+  anki_network:
