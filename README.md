@@ -21,3 +21,9 @@ The images `mariadb`, `nginx-proxy` and `letsencrypt-nginx-proxy-companion` are 
 1. Run `docker-compose up -d`
 1. Navigate to your domain, configure database to MySQL on host `db` with the credentials specified in `mysql-variables.env`
 1. Enjoy your nextcloud instance!
+
+## Updates
+To update all images, simply run
+1. `docker-compose pull`
+2. `docker-compose up -d`
+3. and optionally `docker image prune` to delete old images
