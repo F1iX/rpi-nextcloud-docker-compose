@@ -19,5 +19,10 @@ The images `mariadb`, `nginx-proxy` and `letsencrypt-nginx-proxy-companion` are 
     - `chmod 770 /media/usbssd/nextcloud-data`
     - ...or delete the line `- /media/usbssd/nextcloud-data:/var/www/html/data` to simply use the main Docker volume `nextcloud` for your data
 1. Run `docker-compose up -d`
-1. Navigate to your domain, configure database to MySQL on host `db` with the credentials specified in `mysql-variables.env`
+1. Navigate to your domain, configure database to MySQL
+    - on host `db`
+    - with the credentials specified in `mysql-variables.env`
 1. Enjoy your nextcloud instance!
+
+## Configuration
+You can mount a local directory to `/var/www/html/config` of your _nextcloud-app_-container, however, since the Nextcloud image [checks whether this folder is empty](https://github.com/nextcloud/docker/blob/master/docker-entrypoint.sh#L107) upon creation, you cannot add [single config files](https://docs.nextcloud.com/server/latest/admin_manual/configuration_server/config_sample_php_parameters.html#multiple-config-php-file) and let Nextcloud generate the rest. Instead, you can provide all config files on your own or copy additional config files to the auto-generated set, e.g., for changing the default app from _Dashboard_ to _Files_ using `docker cp defaultapp.config.php nextcloud-app:/var/www/html/config`.

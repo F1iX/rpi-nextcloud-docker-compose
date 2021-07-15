@@ -60,6 +60,7 @@ services:
     volumes:
       - nextcloud:/var/www/html
       - /media/usbssd/nextcloud-data:/var/www/html/data
+      - config:/var/www/html/config
       - /etc/localtime:/etc/localtime:ro
     env_file:
       - nextcloud-variables.env
@@ -67,6 +68,7 @@ services:
 
 volumes:
   nextcloud:
+  config:
   db:
 
 networks:
