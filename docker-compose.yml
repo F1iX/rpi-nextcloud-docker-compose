@@ -2,40 +2,19 @@ version: '3'
 
 services:
 
-  proxy:
-    image: alexanderkrause/rpi-nginx-proxy
-    labels:
-      - "com.github.jrcs.letsencrypt_nginx_proxy_companion.nginx_proxy=true"
-    container_name: nextcloud-proxy
-    networks:
-      - nextcloud_network
+  npm:
+    image: 'jc21/nginx-proxy-manager:latest'
+    restart: unless-stopped
     ports:
-      - 80:80
-      - 443:443
+      - '80:80'
+      - '81:81'
+      - '443:443'
     volumes:
-      - ./proxy/conf.d:/etc/nginx/conf.d:rw
-      - ./proxy/vhost.d:/etc/nginx/vhost.d:rw
-      - ./proxy/html:/usr/share/nginx/html:rw
-      - ./proxy/certs:/etc/nginx/certs:ro
-      - /etc/localtime:/etc/localtime:ro
-      - /var/run/docker.sock:/tmp/docker.sock:ro
-    restart: unless-stopped
-  
-  letsencrypt:
-    image: alexanderkrause/rpi-letsencrypt-nginx-proxy-companion
-    container_name: nextcloud-letsencrypt
-    depends_on:
-      - proxy
+      - ./data:/data
+      - ./letsencrypt:/etc/letsencrypt
     networks:
       - nextcloud_network
-    volumes:
-      - ./proxy/certs:/etc/nginx/certs:rw
-      - ./proxy/vhost.d:/etc/nginx/vhost.d:rw
-      - ./proxy/html:/usr/share/nginx/html:rw
-      - /etc/localtime:/etc/localtime:ro
-      - /var/run/docker.sock:/var/run/docker.sock:ro
-    restart: unless-stopped
-
+    
   db:
     image: jsurf/rpi-mariadb
     container_name: nextcloud-mariadb
@@ -46,6 +25,8 @@ services:
       - /etc/localtime:/etc/localtime:ro
     env_file:
       - mysql-variables.env
+    environment:
+      - MYSQL_HOST=   # override from env file to be empty
     restart: unless-stopped
   
   app:
@@ -54,8 +35,7 @@ services:
     networks:
       - nextcloud_network
     depends_on:
-      - letsencrypt
-      - proxy
+      - npm
       - db
     volumes:
       - nextcloud:/var/www/html
@@ -63,7 +43,10 @@ services:
       - config:/var/www/html/config
       - /etc/localtime:/etc/localtime:ro
     env_file:
+      - mysql-variables.env
       - nextcloud-variables.env
+    environment:
+      - MYSQL_ROOT_PASSWORD=   # override from env file to be empty
     restart: unless-stopped
 
 volumes:
